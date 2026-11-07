@@ -75,3 +75,22 @@ dotnet test FinancialTerminal.Tests.csproj
 Reescribe en C# la lógica del bot de arbitraje en Python (`arbitrage-bot`) y toma el diseño de la terminal web (`terminal-web`). También se apoya en ideas de proyectos de código abierto de terceros del mercado argentino (ChuchoBot y BOTArbitradorPUTs), que no forman parte de este repositorio.
 
 Más detalle de arquitectura para trabajar con Claude Code en [`CLAUDE.md`](CLAUDE.md).
+
+## Créditos y licencias de terceros
+
+Este repositorio contiene solo código propio. Las ideas y fuentes que lo inspiraron son:
+
+| Proyecto | Autoría | Licencia | Relación |
+| --- | --- | --- | --- |
+| [BOTArbitradorPUTs](https://github.com/martinmasella/BOTArbitradorPUTs) | martinmasella (Tinchex Capital) | AGPL-3.0 | La estrategia de **PUTs bajo la par** (`PutsArbitrageStrategy.cs`) usa las mismas fórmulas de costo y ratio. El código es una implementación propia y no se copió el del original. |
+| [ChuchoBot](https://github.com/ChuchoCoder/chuchobot) | ChuchoCoder | sin licencia declarada | Inspiración de la lógica del **arbitraje MEP/CCL** y de la **caución automática**. No se copió código. |
+| [Primary.Net](https://github.com/naicigam/Primary.Net) | Juan Manuel Álvarez | MIT | Referencia para consumir la API de Primary. `PrimaryClient` es una implementación propia. |
+| [Primary API](http://api.primary.com.ar) y la API de PPI | Primary / Portfolio Personal | — | Servicios a los que se conecta la terminal. |
+
+Si sos autor de alguno de estos proyectos y querés que el crédito se muestre de otra forma, abrí un issue.
+
+Dependencias principales (NuGet): [CommunityToolkit.Mvvm](https://github.com/CommunityToolkit/dotnet), [Dapper](https://github.com/DapperLib/Dapper), [Serilog](https://serilog.net), [LiveCharts2](https://github.com/beto-rodriguez/LiveCharts2), [xUnit](https://xunit.net) y [Moq](https://github.com/devlooped/moq).
+
+## Licencia
+
+Código bajo [licencia MIT](LICENSE). © 2026 Nahuel Emiliano Diaz.
