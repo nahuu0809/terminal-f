@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+    <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
+    <AssemblyName>FinancialTerminal</AssemblyName>
+    <RootNamespace>FinancialTerminal.App</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="FinancialTerminal.Core.csproj" />
+    <ProjectReference Include="FinancialTerminal.Brokers.Primary.csproj" />
+    <ProjectReference Include="FinancialTerminal.Brokers.PPI.csproj" />
+    <ProjectReference Include="FinancialTerminal.Strategies.csproj" />
+    <ProjectReference Include="FinancialTerminal.Data.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+    <Page Include="MainWindow.xaml" />
+    <Page Include="SettingsWindow.xaml" />
+    <Page Include="DarkTheme.xaml" />
+    <Compile Include="App.xaml.cs" />
+    <Compile Include="MainWindow.xaml.cs" />
+    <Compile Include="SettingsWindow.xaml.cs" />
+    <Compile Include="MainViewModel.cs" />
+    <Compile Include="SettingsViewModel.cs" />
+    <Compile Include="BotsViewModel.cs" />
+    <Compile Include="ValueConverters.cs" />
+    <Compile Include="RiskManager.cs" />
+    <Compile Include="TradeExecutionEngine.cs" />
+    <Compile Include="ExecutionQueue.cs" />
+    <Compile Include="OperationalMetrics.cs" />
+    <Compile Include="PaperTrading.cs" />
+    <Compile Include="TradingModeGuard.cs" />
+    <Compile Include="OrderReconciliator.cs" />
+  </ItemGroup>
+</Project>

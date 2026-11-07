@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup Condition="'$(UseWPF)' != 'true' and '$([System.String]::Copy(&quot;$(MSBuildProjectName)&quot;).Contains(&quot;_wpftmp&quot;))' != 'True'">
+    <BaseIntermediateOutputPath>obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+  </PropertyGroup>
+</Project>

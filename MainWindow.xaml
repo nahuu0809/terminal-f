@@ -1,0 +1,450 @@
+<Window x:Class="FinancialTerminal.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:FinancialTerminal.App.ViewModels"
+        Title="Financial Terminal" 
+        Style="{StaticResource TerminalWindow}"
+        WindowState="Maximized"
+        Height="900" Width="1600">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>   <!-- Header -->
+            <RowDefinition Height="*"/>    <!-- Content -->
+            <RowDefinition Height="32"/>   <!-- Status Bar -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════════ HEADER BAR ═══════════════════ -->
+        <Border Grid.Row="0" Background="{StaticResource BgHeaderBrush}" 
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo / Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="◆" Foreground="{StaticResource AccentCyanBrush}" FontSize="18" Margin="0,0,8,0"/>
+                    <TextBlock Text="FINANCIAL TERMINAL" FontWeight="Bold" FontSize="14" 
+                               Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Market Status -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="32,0,0,0">
+                    <Ellipse Width="8" Height="8" Margin="0,0,6,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#EF4444"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Market.MarketState}" Value="OPEN">
+                                        <Setter Property="Fill" Value="{StaticResource GreenBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Text="{Binding Market.MarketState}" FontFamily="{StaticResource MonoFont}" 
+                               FontSize="10" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding CurrentTime}" FontFamily="{StaticResource MonoFont}" 
+                               FontSize="11" Foreground="{StaticResource TextPrimaryBrush}" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Indices -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <StackPanel Margin="0,0,20,0">
+                        <TextBlock Text="MERVAL" FontSize="9" Foreground="{StaticResource TextMutedBrush}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Market.MervalValue, StringFormat='{}{0:N0}'}" 
+                                       FontFamily="{StaticResource MonoFont}" FontWeight="Bold" FontSize="12"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="S&amp;P 500" FontSize="9" Foreground="{StaticResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding Market.Sp500Value, StringFormat='{}{0:N0}'}" 
+                                   FontFamily="{StaticResource MonoFont}" FontWeight="Bold" FontSize="12"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Dolar Rates -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <Border Width="1" Background="{StaticResource BorderBrush}" Margin="0,8,16,8"/>
+                    <StackPanel Margin="0,0,16,0">
+                        <TextBlock Text="MEP" FontSize="9" Foreground="{StaticResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding Market.DolarMep, StringFormat='${0:N2}'}" 
+                                   FontFamily="{StaticResource MonoFont}" FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource AccentAmberBrush}"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="CCL" FontSize="9" Foreground="{StaticResource TextMutedBrush}"/>
+                        <TextBlock Text="{Binding Market.DolarCcl, StringFormat='${0:N2}'}" 
+                                   FontFamily="{StaticResource MonoFont}" FontWeight="Bold" FontSize="12"
+                                   Foreground="{StaticResource AccentAmberBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Settlement Toggle -->
+                <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                    <Border Width="1" Background="{StaticResource BorderBrush}" Margin="0,8,16,8"/>
+                    <Button Content="CI" Style="{StaticResource AccentButton}" Margin="0,0,4,0" 
+                            Command="{Binding Market.ToggleSettlementCommand}"/>
+                    <Button Content="24hs" Style="{StaticResource TerminalButton}" 
+                            Command="{Binding Market.ToggleSettlementCommand}"/>
+                </StackPanel>
+
+                <!-- Mode Badge -->
+                <Border Grid.Column="6" CornerRadius="4" Padding="8,2" VerticalAlignment="Center" Margin="0,0,12,0">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="#7C2D12"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Mode}" Value="SANDBOX">
+                                    <Setter Property="Background" Value="#1E3A5F"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding Mode}" FontSize="9" FontWeight="Bold" 
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                </Border>
+
+                <!-- Settings Button -->
+                <Button Grid.Column="7" Content="Settings" Style="{StaticResource TerminalButton}" Margin="0,0,10,0"
+                        Command="{Binding OpenSettingsCommand}" VerticalAlignment="Center"/>
+
+                <!-- Paper Mode -->
+                <ToggleButton Grid.Column="8" Content="Paper" Style="{StaticResource BotToggle}" Margin="0,0,10,0"
+                              IsChecked="{Binding PaperModeEnabled, Mode=OneWay}" Command="{Binding TogglePaperModeCommand}" VerticalAlignment="Center"/>
+
+                <!-- Connect Button -->
+                <Button Grid.Column="9" Content="Conectar" Style="{StaticResource AccentButton}"
+                        Command="{Binding ConnectAllCommand}" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+        <TabControl Grid.Row="1" Style="{StaticResource TerminalTabControl}">
+
+            <!-- ─── TAB: CEDEARs ─── -->
+            <TabItem Header="📊 CEDEARs" Style="{StaticResource TerminalTabItem}">
+                <DataGrid ItemsSource="{Binding Market.Cedears}" Style="{StaticResource TerminalDataGrid}"
+                          ColumnHeaderStyle="{StaticResource TerminalColumnHeader}"
+                          RowStyle="{StaticResource TerminalDataGridRow}"
+                          CellStyle="{StaticResource TerminalDataGridCell}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="80" 
+                                            Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="140"/>
+                        <DataGridTextColumn Header="PRECIO ARS" Binding="{Binding PriceARS, StringFormat='{}{0:N2}'}" Width="100"/>
+                        <DataGridTextColumn Header="PRECIO USD" Binding="{Binding PriceUSD, StringFormat='{}{0:N2}'}" Width="100"/>
+                        <DataGridTextColumn Header="TC IMPL." Binding="{Binding TcImplicit, StringFormat='{}{0:N2}'}" Width="90"
+                                            Foreground="{StaticResource AccentAmberBrush}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="TC REF" Binding="{Binding TcRef, StringFormat='{}{0:N2}'}" Width="80"/>
+                        <DataGridTextColumn Header="DIFF %" Binding="{Binding Diff, StringFormat='{}{0:N2}%'}" Width="80"/>
+                        <DataGridTextColumn Header="SPREAD %" Binding="{Binding Spread, StringFormat='{}{0:N2}%'}" Width="80"/>
+                        <DataGridTextColumn Header="VOLUMEN" Binding="{Binding Volume, StringFormat='{}{0:N0}'}" Width="100"/>
+                        <DataGridTextColumn Header="VAR %" Binding="{Binding VarDay, StringFormat='{}{0:N2}%'}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- ─── TAB: Acciones ─── -->
+            <TabItem Header="📈 Acciones" Style="{StaticResource TerminalTabItem}">
+                <DataGrid ItemsSource="{Binding Market.Acciones}" Style="{StaticResource TerminalDataGrid}"
+                          ColumnHeaderStyle="{StaticResource TerminalColumnHeader}"
+                          RowStyle="{StaticResource TerminalDataGridRow}"
+                          CellStyle="{StaticResource TerminalDataGridCell}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="80"
+                                            Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="160"/>
+                        <DataGridTextColumn Header="PRECIO" Binding="{Binding Price, StringFormat='{}{0:N2}'}" Width="100" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="BID" Binding="{Binding Bid, StringFormat='{}{0:N2}'}" Width="90"
+                                            Foreground="{StaticResource GreenBrush}"/>
+                        <DataGridTextColumn Header="ASK" Binding="{Binding Ask, StringFormat='{}{0:N2}'}" Width="90"
+                                            Foreground="{StaticResource RedBrush}"/>
+                        <DataGridTextColumn Header="SPREAD %" Binding="{Binding Spread, StringFormat='{}{0:N2}%'}" Width="80"/>
+                        <DataGridTextColumn Header="VOLUMEN" Binding="{Binding Volume, StringFormat='{}{0:N0}'}" Width="100"/>
+                        <DataGridTextColumn Header="VAR %" Binding="{Binding VarDay, StringFormat='{}{0:N2}%'}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- ─── TAB: Bonos / ONs ─── -->
+            <TabItem Header="🏛 Bonos &amp; ONs" Style="{StaticResource TerminalTabItem}">
+                <DataGrid ItemsSource="{Binding Market.Bonos}" Style="{StaticResource TerminalDataGrid}"
+                          ColumnHeaderStyle="{StaticResource TerminalColumnHeader}"
+                          RowStyle="{StaticResource TerminalDataGridRow}"
+                          CellStyle="{StaticResource TerminalDataGridCell}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="80"
+                                            Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="200"/>
+                        <DataGridTextColumn Header="PRECIO" Binding="{Binding Price, StringFormat='{}{0:N2}'}" Width="90"/>
+                        <DataGridTextColumn Header="PARIDAD" Binding="{Binding Parity, StringFormat='{}{0:N2}'}" Width="90"/>
+                        <DataGridTextColumn Header="TIR %" Binding="{Binding TIR, StringFormat='{}{0:N2}%'}" Width="80"
+                                            Foreground="{StaticResource GreenBrush}" FontWeight="Bold"/>
+                        <DataGridTextColumn Header="DURATION" Binding="{Binding Duration, StringFormat='{}{0:N2}'}" Width="90"/>
+                        <DataGridTextColumn Header="PROX. CUPÓN" Binding="{Binding NextCoupon}" Width="100"/>
+                        <DataGridTextColumn Header="MONEDA" Binding="{Binding Currency}" Width="70"
+                                            Foreground="{StaticResource AccentAmberBrush}"/>
+                        <DataGridTextColumn Header="LEY" Binding="{Binding Law}" Width="70"/>
+                        <DataGridTextColumn Header="VOLUMEN" Binding="{Binding Volume, StringFormat='{}{0:N0}'}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+
+            <!-- ─── TAB: Portfolio ─── -->
+            <TabItem Header="💼 Portfolio" Style="{StaticResource TerminalTabItem}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Balance Summary -->
+                    <Border Grid.Row="0" Background="{StaticResource BgSecondaryBrush}" Padding="16" Margin="0,0,0,1">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,40,0">
+                                <TextBlock Text="DISPONIBLE ARS" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Portfolio.AvailableARS, StringFormat='${0:N2}'}" 
+                                           FontFamily="{StaticResource MonoFont}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{StaticResource GreenBrush}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,40,0">
+                                <TextBlock Text="DISPONIBLE USD" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Portfolio.AvailableUSD, StringFormat='US${0:N2}'}" 
+                                           FontFamily="{StaticResource MonoFont}" FontSize="20" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentAmberBrush}"/>
+                            </StackPanel>
+                            <Button Content="⟳ Refresh" Style="{StaticResource TerminalButton}" VerticalAlignment="Center"
+                                    Command="{Binding Portfolio.RefreshCommand}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Positions Grid -->
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding Portfolio.Positions}" 
+                              Style="{StaticResource TerminalDataGrid}"
+                              ColumnHeaderStyle="{StaticResource TerminalColumnHeader}"
+                              RowStyle="{StaticResource TerminalDataGridRow}"
+                              CellStyle="{StaticResource TerminalDataGridCell}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="TICKER" Binding="{Binding Ticker}" Width="100"
+                                                Foreground="{StaticResource AccentCyanBrush}" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="CANTIDAD" Binding="{Binding NetQuantity, StringFormat='{}{0:N0}'}" Width="100"/>
+                            <DataGridTextColumn Header="PRECIO COMPRA" Binding="{Binding BuyPrice, StringFormat='{}{0:N2}'}" Width="120"/>
+                            <DataGridTextColumn Header="P&amp;L DÍA" Binding="{Binding TotalDailyDiff, StringFormat='{}{0:N2}'}" Width="100"/>
+                            <DataGridTextColumn Header="P&amp;L TOTAL" Binding="{Binding TotalDiff, StringFormat='{}{0:N2}'}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- ─── TAB: Bots ─── -->
+            <TabItem Header="🤖 Bots" Style="{StaticResource TerminalTabItem}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Bot Summary -->
+                    <Border Grid.Row="0" Background="{StaticResource BgSecondaryBrush}" Padding="16" Margin="0,0,0,1">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,40,0">
+                                <TextBlock Text="BOTS ACTIVOS" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.ActiveBotsCount}" 
+                                           FontFamily="{StaticResource MonoFont}" FontSize="24" FontWeight="Bold"
+                                           Foreground="{StaticResource AccentCyanBrush}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,40,0">
+                                <TextBlock Text="P&amp;L HOY" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.TodayPnL, StringFormat='${0:N2}'}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="24" FontWeight="Bold"
+                                           Foreground="{Binding Bots.TodayPnL, Converter={StaticResource PnLColorConverter}}"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,40,0">
+                                <TextBlock Text="TRADES HOY" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.TodayTradeCount}" 
+                                           FontFamily="{StaticResource MonoFont}" FontSize="24" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="LATENCIA AVG" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.AverageLatencyMs, StringFormat='{}{0:N1} ms'}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="14" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="SLIPPAGE AVG" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.AverageSlippageBps, StringFormat='{}{0:N2} bps'}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="14" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="EXPOSICION ARS/USD" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.ExposureArs, StringFormat='ARS {0:N0}'}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="12" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding Bots.ExposureUsd, StringFormat='USD {0:N0}'}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="12" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,24,0">
+                                <TextBlock Text="HEARTBEAT" FontSize="10" Foreground="{StaticResource TextMutedBrush}"/>
+                                <TextBlock Text="{Binding Bots.Heartbeat}"
+                                           FontFamily="{StaticResource MonoFont}" FontSize="14" FontWeight="Bold"/>
+                            </StackPanel>
+                            <Button Content="⏹ Detener Todos" Style="{StaticResource TerminalButton}" 
+                                    VerticalAlignment="Center" Command="{Binding Bots.StopAllBotsCommand}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Bot Controls -->
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Bots.BotStatuses}" Margin="8">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{StaticResource BgSecondaryBrush}" CornerRadius="6" 
+                                        Padding="16,10" Margin="4" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" 
+                                                   FontSize="12" VerticalAlignment="Center"/>
+
+                                        <TextBlock Grid.Column="1" Text="{Binding Status}" FontSize="10"
+                                                   FontFamily="{StaticResource MonoFont}" VerticalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsRunning}" Value="True">
+                                                            <Setter Property="Foreground" Value="{StaticResource GreenBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+
+                                        <TextBlock Grid.Column="2" Text="{Binding LastOpportunity}" FontSize="10"
+                                                   FontFamily="{StaticResource MonoFont}" Foreground="{StaticResource TextSecondaryBrush}"
+                                                   VerticalAlignment="Center" Margin="16,0"/>
+
+                                        <TextBlock Grid.Column="3" Text="{Binding TradeCount, StringFormat='Trades: {0}'}" 
+                                                   FontSize="10" FontFamily="{StaticResource MonoFont}"
+                                                   Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+
+                                        <ToggleButton Grid.Column="4" Style="{StaticResource BotToggle}" 
+                                                      IsChecked="{Binding IsRunning, Mode=OneWay}"
+                                                      Command="{Binding ToggleCommand}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Bot Logs -->
+                    <Border Grid.Row="2" Background="{StaticResource BgPrimaryBrush}" Margin="8,4,8,8">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="ACTIVITY LOG" FontSize="10" FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextMutedBrush}" Margin="8,8"/>
+                            <ListBox Grid.Row="1" ItemsSource="{Binding Bots.Logs}" 
+                                     Background="Transparent" BorderThickness="0"
+                                     FontFamily="{StaticResource MonoFont}" FontSize="10">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,1">
+                                            <TextBlock Text="{Binding Timestamp}" Foreground="{StaticResource TextMutedBrush}" Width="60"/>
+                                            <TextBlock Text="{Binding Strategy}" Foreground="{StaticResource AccentCyanBrush}" Width="140" Margin="8,0"/>
+                                            <TextBlock Text="{Binding Message}" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- ═══════════════════ STATUS BAR ═══════════════════ -->
+        <Border Grid.Row="2" Background="{StaticResource BgHeaderBrush}" 
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+            <Grid Margin="16,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Connection Status -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Primary:" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,4,0"/>
+                    <Ellipse Width="6" Height="6" Margin="0,0,12,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#EF4444"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PrimaryConnected}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource GreenBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Text="PPI:" FontSize="10" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,4,0"/>
+                    <Ellipse Width="6" Height="6">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="#EF4444"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PpiConnected}" Value="True">
+                                        <Setter Property="Fill" Value="{StaticResource GreenBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                </StackPanel>
+
+                <!-- Status Message -->
+                <TextBlock Grid.Column="1" Text="{Binding StatusMessage}" FontSize="10" 
+                           FontFamily="{StaticResource MonoFont}" Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center" Margin="20,0"/>
+
+                <!-- Last Update -->
+                <TextBlock Grid.Column="3" Text="{Binding Market.LastUpdate, StringFormat='Actualizado: {0}'}" 
+                           FontSize="10" FontFamily="{StaticResource MonoFont}" 
+                           Foreground="{StaticResource TextMutedBrush}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+
+                <!-- Version -->
+                <TextBlock Grid.Column="4" Text="Terminal v1.0.0" FontSize="9" 
+                           FontFamily="{StaticResource MonoFont}" Foreground="{StaticResource TextMutedBrush}"
+                           VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
+
+
+
+
+

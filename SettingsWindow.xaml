@@ -1,0 +1,336 @@
+<Window x:Class="FinancialTerminal.App.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings"
+        Style="{StaticResource TerminalWindow}"
+        Width="720" Height="680"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <!-- Shared label style -->
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AccentCyanBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,12,0,8"/>
+        </Style>
+        <Style x:Key="SettingsTextBox" TargetType="TextBox" BasedOn="{StaticResource TerminalTextBox}">
+            <Setter Property="Width" Value="260"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,2,0,4"/>
+        </Style>
+        <Style x:Key="SettingsCheckBox" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Margin" Value="0,4,0,4"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="PasswordField" TargetType="PasswordBox">
+            <Setter Property="Background" Value="{StaticResource BgTertiaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="CaretBrush" Value="{StaticResource AccentCyanBrush}"/>
+            <Setter Property="Width" Value="260"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,2,0,4"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ═══ Settings Tabs ═══ -->
+        <TabControl Grid.Row="0" Style="{StaticResource TerminalTabControl}" Margin="8">
+
+            <!-- ─── Brokers ─── -->
+            <TabItem Header="Brokers" Style="{StaticResource TerminalTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <!-- Mode -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="MODO"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="Modo:"/>
+                            <ComboBox Width="160" SelectedItem="{Binding Mode}"
+                                      Background="{StaticResource BgTertiaryBrush}"
+                                      Foreground="{StaticResource TextPrimaryBrush}">
+                                <ComboBoxItem Content="sandbox"/>
+                                <ComboBoxItem Content="production"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <!-- Primary -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="PRIMARY (MARKET DATA)"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Base URL"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PrimaryBaseUrl, UpdateSourceTrigger=PropertyChanged}" Width="420"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Username"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PrimaryUsername, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Password"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PrimaryPassword, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Account"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PrimaryAccount, UpdateSourceTrigger=PropertyChanged}"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Usar WebSocket" IsChecked="{Binding PrimaryUseWebSocket}"/>
+
+                        <!-- PPI -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="PPI (ORDER EXECUTION)"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Username"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PpiUsername, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Password"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PpiPassword, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Account Number"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Text="{Binding PpiAccountNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Usar Sandbox PPI" IsChecked="{Binding PpiUseSandbox}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="Rate Limit (req/min):" Width="140"/>
+                            <TextBox Style="{StaticResource SettingsTextBox}" Width="80" Text="{Binding PpiRateLimitPerMinute, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Trading ─── -->
+            <TabItem Header="Trading" Style="{StaticResource TerminalTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="PARAMETROS DE TRADING"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Capital Inicial (ARS)"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding InitialCapital, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Min. Profit Neto (ARS)"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MinNetProfit, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Capital/Op (%)"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxCapitalPerOperationPercent, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Polling Interval (ms)"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding PollingIntervalMs, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Slippage (%)"/>
+                            <TextBox Grid.Row="4" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxSlippagePercent, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="PAPER TRADING"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Paper Mode Habilitado" IsChecked="{Binding PaperEnabled}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Cash Inicial ARS"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding PaperInitialCashArs, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Cash Inicial USD"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding PaperInitialCashUsd, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Slippage Default (bps)"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding PaperDefaultSlippageBps, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Risk ─── -->
+            <TabItem Header="Risk" Style="{StaticResource TerminalTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="GESTION DE RIESGO"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Daily Loss (%)"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxDailyLossPercent, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Daily Loss (ARS)"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxDailyLossArs, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Position / Ticker"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxPositionPerTicker, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Consecutive Failures"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Text="{Binding MaxConsecutiveFailures, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Kill Switch por Latencia" IsChecked="{Binding EnableLatencyKillSwitch}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Strategies ─── -->
+            <TabItem Header="Estrategias" Style="{StaticResource TerminalTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <!-- CI vs 24hs -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="CI vs 24hs ARBITRAGE"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Habilitado" IsChecked="{Binding ArbitrageEnabled}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="TNA Minima:" Width="140"/>
+                            <TextBox Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding ArbitrageTasaMinimaTNA, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Tickers (separados por coma)"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Width="420" Text="{Binding ArbitrageTickers, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <!-- MEP/CCL -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="MEP/CCL ARBITRAGE"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Habilitado" IsChecked="{Binding MepCclEnabled}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="Min Spread (%):" Width="140"/>
+                            <TextBox Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding MepCclMinSpreadPercent, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Bond Bases (ej: AL30, GD30)"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Width="300" Text="{Binding MepCclBondBases, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <!-- Market Making -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="MARKET MAKING"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Habilitado" IsChecked="{Binding MmEnabled}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Ticker"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding MmTicker, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Min Spread (%)"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding MmMinSpread, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Order Size"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding MmOrderSize, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="3" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Max Position"/>
+                            <TextBox Grid.Row="3" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding MmMaxPosition, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+
+                        <!-- Caucion -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="CAUCION AUTO"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Habilitado" IsChecked="{Binding CaucionEnabled}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="Min TNA (%):" Width="140"/>
+                            <TextBox Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding CaucionMinRatePercent, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,4">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="Hora Ejecucion:" Width="140"/>
+                            <TextBox Style="{StaticResource SettingsTextBox}" Width="80" Text="{Binding CaucionCloseTime, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
+
+                        <!-- PUTs -->
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="PUTs BAJO LA PAR"/>
+                        <CheckBox Style="{StaticResource SettingsCheckBox}" Content="Habilitado" IsChecked="{Binding OptionsEnabled}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Comision Opciones (%)"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding OptionsComisionOpcionesPct, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Comision Acciones (%)"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding OptionsComisionAccionesPct, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Min Ratio (%)"/>
+                            <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="100" Text="{Binding OptionsMinRatioPct, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="Underlyings (ej: GGAL, YPFD, PAMP)"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Width="300" Text="{Binding OptionsUnderlyings, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="PUT Tickers (ej: GFGV75054F, GFGV80004F)"/>
+                        <TextBox Style="{StaticResource SettingsTextBox}" Width="420" Text="{Binding OptionsPutTickers, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="False" TextWrapping="Wrap" Height="48"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Schedule ─── -->
+            <TabItem Header="Horarios" Style="{StaticResource TerminalTabItem}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="16">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionHeader}" Text="HORARIOS DE MERCADO"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Apertura"/>
+                            <TextBox Grid.Row="0" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="80" Text="{Binding MarketOpenTime, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource FieldLabel}" Text="Cierre"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Style="{StaticResource SettingsTextBox}" Width="80" Text="{Binding MarketCloseTime, UpdateSourceTrigger=PropertyChanged}"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+
+        <!-- ═══ Bottom Bar ═══ -->
+        <Border Grid.Row="1" Background="{StaticResource BgHeaderBrush}"
+                BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0"
+                Padding="16,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{Binding StatusText}"
+                           FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"
+                           VerticalAlignment="Center"/>
+
+                <Button Grid.Column="1" Content="Defaults" Style="{StaticResource TerminalButton}"
+                        Margin="0,0,8,0" Command="{Binding ResetDefaultsCommand}"/>
+                <Button Grid.Column="2" Content="Guardar" Style="{StaticResource AccentButton}"
+                        Margin="0,0,8,0" Command="{Binding SaveCommand}"/>
+                <Button Grid.Column="3" Content="Cerrar" Style="{StaticResource TerminalButton}"
+                        Click="CloseButton_Click"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

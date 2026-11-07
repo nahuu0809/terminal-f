@@ -1,0 +1,33 @@
+## .NET / Visual Studio
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.cache
+TestResults/
+*.nupkg
+packages/
+
+## Logs y bases de datos generadas
+logs/
+*.log
+*.sqlite3
+*.db
+
+## Credenciales y configuración local: NUNCA subir
+appsettings.Development.json
+appsettings.Production.json
+appsettings.Local.json
+secrets.json
+.env
+.env.*
+
+## Herramientas locales
+.claude/settings.local.json
+.idea/
+*.sln.DotSettings.user
+
+## Sistema
+Thumbs.db
+.DS_Store
